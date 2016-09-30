@@ -902,7 +902,7 @@ class Transaction
         if (isset($params['CreatedDateIso']))
             $transaction->setCreatedAt(new \DateTime($params['CreatedDateIso']));
         elseif (isset($params['DateTime']))
-            $transaction->setCreatedAt(new \DateTime($params['CreatedDateIso']));
+            $transaction->setCreatedAt(new \DateTime($params['DateTime']));
         if (isset($params['AuthDateIso']))
             $transaction->setAuthorizedAt(new \DateTime($params['AuthDateIso']));
         if (isset($params['ConfirmDateIso']))
