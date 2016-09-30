@@ -869,7 +869,10 @@ class Transaction
     }
 
     /**
-     * @param $params
+     * Create Transaction from array of params
+     * For example you can pass $_POST or $_GET here for Check/Fail/Pay calls
+     *
+     * @param array $params
      * @return Transaction
      */
     public static function fromArray($params)
@@ -897,6 +900,8 @@ class Transaction
         if (isset($params['JsonData']))
             $transaction->setData((array)$params['JsonData']);
         if (isset($params['CreatedDateIso']))
+            $transaction->setCreatedAt(new \DateTime($params['CreatedDateIso']));
+        elseif (isset($params['DateTime']))
             $transaction->setCreatedAt(new \DateTime($params['CreatedDateIso']));
         if (isset($params['AuthDateIso']))
             $transaction->setAuthorizedAt(new \DateTime($params['AuthDateIso']));
