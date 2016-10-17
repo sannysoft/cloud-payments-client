@@ -283,6 +283,24 @@ class Manager
     }
 
     /**
+     * Check if signature is valid for incoming requests from CloudPayments
+     *
+     * @param string $key API Secret key
+     * @return bool
+     */
+    public function checkSignatureFromRequest($key)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST')
+            $data = file_get_contents('php://input'); else
+            $data = $_SERVER['QUERY_STRING'];
+
+        $localSignature = base64_encode(hash_hmac('sha256', $data, $key, true));
+        $passedSignature = $_SERVER['HTTP_CONTENT-HMAC'];
+
+        return $passedSignature == $localSignature;
+    }
+
+    /**
      * @return string
      */
     public function getUrl()
