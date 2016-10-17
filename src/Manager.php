@@ -27,8 +27,8 @@ class Manager
     protected $_privateKey;
 
     /**
-     * @param $publicKey
-     * @param $privateKey
+     * @param string $publicKey
+     * @param string $privateKey
      */
     public function __construct($publicKey, $privateKey)
     {
@@ -109,13 +109,13 @@ class Manager
     }
 
     /**
-     * @param $amount
-     * @param $currency
-     * @param $ipAddress
-     * @param $cardHolderName
-     * @param $cryptogram
+     * @param float $amount
+     * @param string $currency
+     * @param string $ipAddress
+     * @param string $cardHolderName
+     * @param string $cryptogram
      * @param array $params
-     * @param bool $requireConfirmation
+     * @param bool $requireConfirmation true: 2 step - authorization+charge, false: 1 step
      * @return Model\Required3DS|Model\Transaction
      * @throws Exception\PaymentException
      * @throws Exception\RequestException
@@ -149,10 +149,12 @@ class Manager
     }
 
     /**
-     * @param $amount
-     * @param $currency
-     * @param $accountId
-     * @param $token
+     * Charge or authorize payment
+     *
+     * @param float $amount
+     * @param string $currency
+     * @param int $accountId
+     * @param string $token
      * @param array $params
      * @param bool $requireConfirmation
      * @return Model\Required3DS|Model\Transaction
@@ -187,8 +189,10 @@ class Manager
     }
 
     /**
-     * @param $transactionId
-     * @param $token
+     * Confirm 3ds transaction after customer entered SMS-code
+     *
+     * @param string $transactionId
+     * @param string $token
      * @return Model\Transaction
      * @throws Exception\PaymentException
      * @throws Exception\RequestException
@@ -212,8 +216,8 @@ class Manager
     }
 
     /**
-     * @param $transactionId
-     * @param $amount
+     * @param string $transactionId
+     * @param float $amount
      * @throws Exception\RequestException
      */
     public function confirmPayment($transactionId, $amount)
@@ -229,7 +233,7 @@ class Manager
     }
 
     /**
-     * @param $transactionId
+     * @param string $transactionId
      * @throws Exception\RequestException
      */
     public function voidPayment($transactionId)
@@ -238,14 +242,14 @@ class Manager
             'TransactionId' => $transactionId
         ]);
 
-        if (!$response['Success']) {
+        if (!isset($response['Model']) && !$response['Success']) {
             throw new Exception\RequestException($response);
         }
     }
 
     /**
-     * @param $transactionId
-     * @param $amount
+     * @param string $transactionId
+     * @param float $amount
      * @throws Exception\RequestException
      */
     public function refundPayment($transactionId, $amount)
@@ -261,7 +265,7 @@ class Manager
     }
 
     /**
-     * @param $invoiceId
+     * @param string $invoiceId
      * @return Model\Transaction
      * @throws Exception\RequestException
      */
@@ -271,7 +275,7 @@ class Manager
             'InvoiceId' => $invoiceId
         ]);
 
-        if (!$response['Success']) {
+        if (!isset($response['Model']) && !$response['Success']) {
             throw new Exception\RequestException($response);
         }
 
