@@ -2,27 +2,29 @@
 
 namespace CloudPayments;
 
+use Monolog\Logger;
+
 class Manager
 {
     /**
      * @var string
      */
-    protected $url = 'https://api.cloudpayments.ru';
+    protected $_url = 'https://api.cloudpayments.ru';
 
     /**
      * @var string
      */
-    protected $locale = 'en-US';
+    protected $_locale = 'en-US';
 
     /**
      * @var string
      */
-    protected $publicKey;
+    protected $_publicKey;
 
     /**
      * @var string
      */
-    protected $privateKey;
+    protected $_privateKey;
 
     /**
      * @param $publicKey
@@ -30,8 +32,19 @@ class Manager
      */
     public function __construct($publicKey, $privateKey)
     {
-        $this->publicKey = $publicKey;
-        $this->privateKey = $privateKey;
+        $this->_publicKey = $publicKey;
+        $this->_privateKey = $privateKey;
+        $this->_logger = new Logger('cloudpayments');
+    }
+
+    /**
+     * You can push handler to monolog logger to store logs
+     *
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        return $this->_logger;
     }
 
     /**
@@ -41,19 +54,27 @@ class Manager
      */
     protected function sendRequest($endpoint, array $params = [])
     {
-        $params['CultureName'] = $this->locale;
+        //Set locale name
+        $params['CultureName'] = $this->_locale;
 
+        //Log request
+        $this->_logger->debug("Request $endpoint with params: " . http_build_query($params));
+
+        //Make request
         $curl = curl_init();
-
-        curl_setopt($curl, CURLOPT_URL, $this->url . $endpoint);
-        curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $this->publicKey, $this->privateKey));
+        curl_setopt($curl, CURLOPT_URL, $this->_url . $endpoint);
+        curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $this->_publicKey, $this->_privateKey));
         curl_setopt($curl, CURLOPT_TIMEOUT, 20);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-
         $result = curl_exec($curl);
+
+        //Log response
+        if (curl_errno($curl))
+            $this->_logger->error('Request error: ' . curl_error($curl)); else
+            $this->_logger->debug("Response $endpoint: $result");
 
         curl_close($curl);
 
@@ -65,7 +86,7 @@ class Manager
      */
     public function getLocale()
     {
-        return $this->locale;
+        return $this->_locale;
     }
 
     /**
@@ -73,7 +94,7 @@ class Manager
      */
     public function setLocale($locale)
     {
-        $this->locale = $locale;
+        $this->_locale = $locale;
     }
 
     /**
@@ -262,7 +283,7 @@ class Manager
      */
     public function getUrl()
     {
-        return $this->url;
+        return $this->_url;
     }
 
     /**
@@ -271,7 +292,7 @@ class Manager
      */
     public function setUrl($value)
     {
-        $this->url = $value;
+        $this->_url = $value;
 
         return $this;
     }
@@ -281,7 +302,7 @@ class Manager
      */
     public function getPublicKey()
     {
-        return $this->publicKey;
+        return $this->_publicKey;
     }
 
     /**
@@ -290,7 +311,7 @@ class Manager
      */
     public function setPublicKey($value)
     {
-        $this->publicKey = $value;
+        $this->_publicKey = $value;
 
         return $this;
     }
@@ -300,7 +321,7 @@ class Manager
      */
     public function getPrivateKey()
     {
-        return $this->privateKey;
+        return $this->_privateKey;
     }
 
     /**
@@ -309,7 +330,7 @@ class Manager
      */
     public function setPrivateKey($value)
     {
-        $this->privateKey = $value;
+        $this->_privateKey = $value;
 
         return $this;
     }

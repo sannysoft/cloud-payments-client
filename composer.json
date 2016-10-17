@@ -1,11 +1,12 @@
 {
     "name" : "sannysoft/cloud-payments-client",
     "description": "Client for CloudPayments.ru",
-    "version" : "0.0.10",
+    "version" : "0.0.11",
     "type" : "library",
     "license" : "MIT",
     "require" : {
-        "php": ">=5.5"
+        "php": ">=5.5",
+        "monolog/monolog": "^1.21"
     },
     "autoload" : {
         "psr-4" : {
