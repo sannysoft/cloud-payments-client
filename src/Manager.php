@@ -289,12 +289,15 @@ class Manager
      */
     public function verifySignatureFromRequest()
     {
+        if (!isset($_SERVER['HTTP_CONTENT_HMAC']))
+            return false;
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
             $data = file_get_contents('php://input'); else
             $data = $_SERVER['QUERY_STRING'];
 
         $localSignature = base64_encode(hash_hmac('sha256', $data, $this->_privateKey, true));
-        $passedSignature = $_SERVER['HTTP_CONTENT-HMAC'];
+        $passedSignature = $_SERVER['HTTP_CONTENT_HMAC'];
 
         return $passedSignature == $localSignature;
     }
