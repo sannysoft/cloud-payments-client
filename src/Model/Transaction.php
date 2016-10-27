@@ -184,6 +184,12 @@ class Transaction
      */
     protected $token;
 
+    /** @var  float */
+    protected $fee;
+
+    /** @var  float */
+    protected $payoutAmount;
+
     /**
      * @return integer
      */
@@ -869,6 +875,44 @@ class Transaction
     }
 
     /**
+     * @return float
+     */
+    public function getFee()
+    {
+        return $this->fee;
+    }
+
+    /**
+     * @param float $fee
+     * @return Transaction
+     */
+    public function setFee($fee)
+    {
+        $this->fee = $fee;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPayoutAmount()
+    {
+        return $this->payoutAmount;
+    }
+
+    /**
+     * @param float $payoutAmount
+     * @return Transaction
+     */
+    public function setPayoutAmount($payoutAmount)
+    {
+        $this->payoutAmount = $payoutAmount;
+
+        return $this;
+    }
+
+    /**
      * Create Transaction from array of params
      * For example you can pass $_POST or $_GET here for Check/Fail/Pay calls
      *
@@ -947,6 +991,10 @@ class Transaction
             $transaction->setCardHolderName($params['Name']);
         if (isset($params['Token']))
             $transaction->setToken($params['Token']);
+        if (isset($params['Fee']))
+            $transaction->setFee($params['Fee']);
+        if (isset($params['PayoutAmount']))
+            $transaction->setPayoutAmount($params['PayoutAmount']);
 
         return $transaction;
     }
