@@ -204,7 +204,7 @@ class Manager
             'PaRes' => $token
         ]);
 
-        if ($response['Message']) {
+        if (isset($response['Message']) && $response['Message']) {
             throw new Exception\RequestException($response);
         }
 

@@ -4,6 +4,12 @@ namespace CloudPayments\Model;
 
 class Transaction
 {
+
+    const STATUS_CHARGED = 'Completed';
+    const STATUS_AUTHORIZED = 'Authorized';
+    const STATUS_DECLINED = 'Declined';
+    const STATUS_CANCELLED = 'Cancelled';
+
     /**
      * @var integer
      */
